@@ -2,6 +2,8 @@
 
 Usage: uv run --with opencv-python-headless --with numpy scripts/measure_scan.py SCAN [SCAN ...] [--drop T11,B4]
 --drop removes tiles a person marked wrong on the sheet (applies to every scan given).
+--pair treats scans as pairs of the same side, the second turned 180° on the glass, and averages
+each physical border across the two so the scanner lamp's one-sided edge shadow cancels out.
 For each scan prints L/R/T/B border widths (px) and lr/tb, and writes <scan>_tiles.jpg
 showing every measured spot zoomed, with the card edge (red) and design edge (green).
 Not part of the app; the human check of the sheet is what makes these labels ground truth.
@@ -24,9 +26,17 @@ def deskew_crop(img):
     cnts, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     rect = cv2.minAreaRect(max(cnts, key=cv2.contourArea))
     (cx, cy), (w, h), ang = rect
-    if w > h:  # make it portrait
+    # Only ever correct a small tilt: bring the angle into (-45, 45]. minAreaRect's angle
+    # convention differs across OpenCV versions; without this a card could be turned 180°,
+    # which silently breaks the --pair left/right matching.
+    while ang > 45:
         ang -= 90
         w, h = h, w
+    while ang <= -45:
+        ang += 90
+        w, h = h, w
+    if w > h:
+        raise SystemExit("Card is sideways on the scan; place it portrait (upright or upside down).")
     m = cv2.getRotationMatrix2D((cx, cy), ang, 1.0)
     rot = cv2.warpAffine(img, m, (img.shape[1], img.shape[0]), flags=cv2.INTER_CUBIC,
                          borderMode=cv2.BORDER_REPLICATE)
@@ -114,11 +124,46 @@ def check_sheet(img, res, path):
     print(f"  sheet: {path}")
 
 
+def ratios(w):
+    lr = round(max(w["left"], w["right"]) / (w["left"] + w["right"]) * 100)
+    tb = round(max(w["top"], w["bottom"]) / (w["top"] + w["bottom"]) * 100)
+    return lr, tb
+
+
+def is_flipped(card_a, card_b):
+    """True if card_b is card_a turned 180° (compares small grayscale thumbnails)."""
+    def thumb(c):
+        return cv2.resize(cv2.cvtColor(c, cv2.COLOR_BGR2GRAY), (64, 88)).astype(np.float32)
+    a, b = thumb(card_a), thumb(card_b)
+    return float(np.abs(a - b[::-1, ::-1]).mean()) < float(np.abs(a - b).mean())
+
+
+def combine(wa, wb, flipped):
+    """Average each physical border across two scans of the same side."""
+    if flipped:
+        wb = {"left": wb["right"], "right": wb["left"], "top": wb["bottom"], "bottom": wb["top"]}
+    return {s: (wa[s] + wb[s]) / 2 for s in wa}
+
+
+def print_pair(name_a, name_b, wa, wb, card_a, card_b):
+    flipped = is_flipped(card_a, card_b)
+    w = combine(wa, wb, flipped)
+    lr, tb = ratios(w)
+    print(f"PAIR {name_a} + {name_b} ({'second turned 180°' if flipped else 'same orientation'})")
+    print("  " + "  ".join(f"{s} {w[s]:.1f}" for s in w))
+    print(f"  lr {lr}/{100 - lr}   tb {tb}/{100 - tb}   <- use these")
+    if not flipped:
+        print("  WARNING: second scan is not turned 180°, so the edge shadow does not cancel.")
+
+
 def main():
     drops = {t for a in sys.argv[1:] if a.startswith("--drop") for t in a.split("=", 1)[-1].split(",")}
     if "--drop" in sys.argv:  # also accept "--drop T11,B4" as two args
         drops |= set(sys.argv[sys.argv.index("--drop") + 1].split(","))
     scans = [a for a in sys.argv[1:] if not a.startswith("--drop") and a.split(",")[0] not in drops]
+    pair = "--pair" in scans
+    scans = [a for a in scans if a != "--pair"]
+    done = []
     for arg in scans:
         raw = cv2.imread(arg)
         card, pad, px_per_mm = deskew_crop(raw)
@@ -129,8 +174,7 @@ def main():
         kept = {s: [d - c for _, c, d, k in rows if k] for s, rows in res.items()}
         widths = {s: float(np.median(v)) for s, v in kept.items()}
         spread = {s: float(np.ptp(v)) for s, v in kept.items()}
-        lr = round(max(widths["left"], widths["right"]) / (widths["left"] + widths["right"]) * 100)
-        tb = round(max(widths["top"], widths["bottom"]) / (widths["top"] + widths["bottom"]) * 100)
+        lr, tb = ratios(widths)
         sheet = Path(arg).with_name(Path(arg).stem + "_tiles.jpg")
         print(Path(arg).name)
         for s in widths:
@@ -138,6 +182,10 @@ def main():
                   f"spread {spread[s]:.1f})")
         print(f"  lr {lr}/{100 - lr}   tb {tb}/{100 - tb}")
         check_sheet(card, res, sheet)
+        done.append((Path(arg).name, widths, card))
+    if pair:
+        for (na, wa, ca), (nb, wb, cb) in zip(done[::2], done[1::2]):
+            print_pair(na, nb, wa, wb, ca, cb)
 
 
 if __name__ == "__main__":

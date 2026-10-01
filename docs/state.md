@@ -22,7 +22,7 @@ Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `
 
 ## Next Up
 1. `/speckit-analyze` for 001, then implement via Superpowers (worktree + subagent-driven-development)
-2. Builder: shoot and hand-measure the pipeline photo set into `backend/tests/pipeline/photos/` (folders, `labels.csv` header and instructions in its README) before T014. 1 of 8+ bordered cards done (Pikachu 30C 045: front 55/45 L/R, a borderline-10 case; back 51/49); `scripts/measure_scan.py` measures scans and writes a check sheet for the builder to confirm
+2. Builder: shoot and hand-measure the pipeline photo set into `backend/tests/pipeline/photos/` (folders, `labels.csv` header and instructions in its README) before T014. Pansage PAR 004 done with double scans (front 54/54 via click tool, back 54/52 auto); Pikachu 30C 045 needs rescans. Scanner lamp shadows add ~4 px to whichever edge lies at the top of the glass; scanning each side twice (second turned 180°) and averaging cancels it. Silver border on light-green art needs `scripts/click_measure.py`
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)
