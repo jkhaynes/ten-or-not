@@ -1,0 +1,37 @@
+# Claude Code: personal settings stay local, shared settings are committed
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Superpowers worktrees
+.worktrees/
+
+# Secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+*.pfx
+*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# .NET
+bin/
+obj/
+TestResults/
+*.user
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Python
+__pycache__/
+.venv/
