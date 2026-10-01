@@ -8,6 +8,7 @@
 Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `/speckit-analyze`, then implementation.
 
 ## Recently Done
+- Pipeline photo set started: Git LFS tracks `backend/tests/pipeline/photos/**/*.jpg`; confirmed tile sheets kept in `photos/evidence/` as proof of each label
 - Constitution v1.0.2: VII reworded to "Photos Are Never Retained" (framework temp buffers that die with the request are allowed); dropped the spool-size workaround from 001 research/tasks, which clears analyze finding C1
 - Applied analyze fixes U1 (miscut = not measurable), I1 (`expect_reason` column), I2 (card outline in preview), G1 (unreadable HEIC handled in T015)
 - Generated 001 tasks.md: setup, foundational, US1 MVP (T009-T019), US2 retake (T020-T028), US3 full-art (T029-T032), polish
@@ -21,7 +22,7 @@ Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `
 
 ## Next Up
 1. `/speckit-analyze` for 001, then implement via Superpowers (worktree + subagent-driven-development)
-2. Builder: shoot and hand-measure the pipeline photo set (see 001 quickstart) before Story 1 pipeline tests
+2. Builder: shoot and hand-measure the pipeline photo set into `backend/tests/pipeline/photos/` (folders, `labels.csv` header and instructions in its README) before T014. 1 of 8+ bordered cards done (Pikachu 30C 045: front 55/45 L/R, a borderline-10 case; back 51/49); `scripts/measure_scan.py` measures scans and writes a check sheet for the builder to confirm
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)

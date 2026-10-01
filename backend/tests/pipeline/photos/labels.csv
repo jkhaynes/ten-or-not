@@ -1,0 +1,3 @@
+file,side,card_type,lr,tb,expect_reason
+bordered/pikachu-30c-045-front.jpg,front,bordered,55,50,
+bordered/pikachu-30c-045-back.jpg,back,bordered,51,52,
