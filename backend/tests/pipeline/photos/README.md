@@ -10,6 +10,17 @@ Real phone photos with hand-measured centering. `tests/pipeline/test_labeled_pho
 
 Name files `<card>-<side>.jpg`, e.g. `bordered/pikachu-151-front.jpg`.
 
+## Cards in the set
+Keep this up to date as cards are added, so coverage gaps are visible.
+
+| Card | Set | Finish | Front border | Measured with | Max grade (centering) |
+|------|-----|--------|--------------|---------------|-----------------------|
+| Pikachu 045/128 | 30th Celebration (30C) | Holo | Sparkly foil (holo pattern) | Auto helper | PSA 10, borderline (front L/R 55/45) |
+| Pansage 004/182 | Paradox Rift (PAR) | Reverse holo | Silver (SV era) | Click tool (front), auto (back) | PSA 10 |
+| Butterfree 3/147 | Burning Shadows (BUS) | Reverse holo | Yellow | Auto helper | PSA 8 (front L/R 61/39) |
+
+**Still wanted:** a plain non-holo card (baseline), a card in a top loader (glare through thick plastic), 3 full-art fronts, the bad photos.
+
 ## labels.csv
 One row per photo. `file` is relative to this folder.
 
