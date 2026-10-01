@@ -5,15 +5,18 @@
 **Last updated:** 2026-10-01
 
 ## Current Focus
-Constitution ratified (v1.0.0); next is the first feature spec.
+Spec for capability 1 (`specs/001-capture-centering/spec.md`) written and clarified; ready for planning.
 
 ## Recently Done
+- PSA centering thresholds verified from psacard.com and recorded in the 001 spec (PSA 10 through 1.5; worse than 90/10 = max PSA 1)
+- Drafted `specs/001-capture-centering/spec.md` + quality checklist (3 user stories: bordered max grade, retake advice, full-art); clarified: full-art measured against printed frame or 'not measurable', no manual edge adjustment, built local-only until capability 2 adds the allowlist
+- Constitution v1.0.1: principle IX clarified to apply to deployed endpoints
 - Constitution v1.0.0 (`.specify/memory/constitution.md`): template principles I-V kept, product principles VI-XI added (honest estimates, no photo storage, measure before model, allowlist, measured accuracy, phone-first); technical constraints and workflow filled in
 - Repo created from project-template, public at https://github.com/jkhaynes/ten-or-not
 - Testing strategy (`docs/testing.md`), PRD (`docs/prd.md`), ADR 0002 (stack), CLAUDE.md, README, architecture sketch
 
 ## Next Up
-1. `/speckit-specify` for capability 1: capture and centering
+1. Optional `/speckit-clarify` pass on 001, then `/speckit-plan`
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)

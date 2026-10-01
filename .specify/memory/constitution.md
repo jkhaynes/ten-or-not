@@ -49,9 +49,10 @@ Grade thresholds live in one data table, not in the math.
 Rationale: deterministic results are reproducible, testable, and explainable to the user.
 
 ### IX. Allowlist on Every Request
-No API endpoint (other than an unauthenticated health check) works without a verified Firebase ID
+No deployed API endpoint (other than an unauthenticated health check) works without a verified Firebase ID
 token whose email is on the allowlist. Missing or invalid token returns 401; valid token not on the
-allowlist returns 403. The allowlist comes from configuration, never from source control.
+allowlist returns 403. The allowlist comes from configuration, never from source control. A feature may run locally
+without sign-in before the allowlist exists, but nothing is deployed until it is enforced.
 Rationale: this is a private tool for a small group; every open endpoint is cost and abuse risk.
 
 ### X. Accuracy Is Measured, Not Claimed
@@ -92,4 +93,4 @@ for added ones, PATCH for wording) and a short note of what changed. Every plan.
 constitution check, and code review verifies compliance; deviations must be justified in plan.md or
 an ADR. Day-to-day guidance lives in `CLAUDE.md`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-01 | **Last Amended**: 2026-10-01
+**Version**: 1.0.1 | **Ratified**: 2026-10-01 | **Last Amended**: 2026-10-01
