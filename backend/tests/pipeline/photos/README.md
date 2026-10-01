@@ -18,8 +18,9 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 | Pikachu 045/128 | 30th Celebration (30C) | Holo | Sparkly foil (holo pattern) | Auto helper | PSA 10, borderline (front L/R 55/45) |
 | Pansage 004/182 | Paradox Rift (PAR) | Reverse holo | Silver (SV era) | Click tool (front), auto (back) | PSA 10 |
 | Butterfree 3/147 | Burning Shadows (BUS) | Reverse holo | Yellow | Auto helper | PSA 8 (front L/R 61/39) |
+| Caterpie 1/147 | Burning Shadows (BUS) | Non-holo | Yellow | Auto helper (sleeve edge confused one front scan's right side) | PSA 9 (front T/B 57/43); front photo deliberately ~9% off-angle |
 
-**Still wanted:** a plain non-holo card (baseline), a card in a top loader (glare through thick plastic), 3 full-art fronts, the bad photos.
+**Still wanted:** a card in a top loader (glare through thick plastic), 3 full-art fronts, the bad photos.
 
 ## labels.csv
 One row per photo. `file` is relative to this folder.

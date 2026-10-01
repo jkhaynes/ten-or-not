@@ -148,9 +148,13 @@ def check_sheet(img, res, path, unused=()):
 
 
 def ratios(w):
-    lr = round(max(w["left"], w["right"]) / (w["left"] + w["right"]) * 100)
-    tb = round(max(w["top"], w["bottom"]) / (w["top"] + w["bottom"]) * 100)
-    return lr, tb
+    def one(a, b):
+        return None if np.isnan(a + b) else round(max(a, b) / (a + b) * 100)
+    return one(w["left"], w["right"]), one(w["top"], w["bottom"])
+
+
+def fmt(x):
+    return "n/a" if x is None else f"{x}/{100 - x}"
 
 
 def is_flipped(card_a, card_b):
@@ -170,9 +174,10 @@ def combine(wa, wb, flipped, top_shadow=False):
     The click tool averages everything, because a person clicks past the shadow."""
     if flipped:
         wb = {"left": wb["right"], "right": wb["left"], "top": wb["bottom"], "bottom": wb["top"]}
-    w = {s: (wa[s] + wb[s]) / 2 for s in wa}
-    if flipped and top_shadow:
-        w["top"], w["bottom"] = wb["top"], wa["bottom"]  # each from its unshadowed scan
+    w = {s: float(np.nanmean([wa[s], wb[s]])) for s in wa}  # NaN = no valid spots in that scan
+    if flipped and top_shadow:  # each from its unshadowed scan, unless that one has no reading
+        w["top"] = wb["top"] if not np.isnan(wb["top"]) else wa["top"]
+        w["bottom"] = wa["bottom"] if not np.isnan(wa["bottom"]) else wb["bottom"]
     return w
 
 
@@ -182,7 +187,7 @@ def print_pair(name_a, name_b, wa, wb, card_a, card_b, top_shadow=False):
     lr, tb = ratios(w)
     print(f"PAIR {name_a} + {name_b} ({'second turned 180°' if flipped else 'same orientation'})")
     print("  " + "  ".join(f"{s} {w[s]:.1f}" for s in w))
-    print(f"  lr {lr}/{100 - lr}   tb {tb}/{100 - tb}   <- use these")
+    print(f"  lr {fmt(lr)}   tb {fmt(tb)}   <- use these")
     if not flipped:
         print("  WARNING: second scan is not turned 180°, so the edge shadow does not cancel.")
 
@@ -204,15 +209,16 @@ def main():
             res[side] = [(p, c, d, k and f"{side[0].upper()}{i}" not in mine)
                          for i, (p, c, d, k) in enumerate(rows, 1)]
         kept = {s: [d - c for _, c, d, k in rows if k] for s, rows in res.items()}
-        widths = {s: float(np.median(v)) for s, v in kept.items()}
-        spread = {s: float(np.ptp(v)) for s, v in kept.items()}
+        # a side with every spot rejected is NaN; --pair then uses the other scan's reading
+        widths = {s: float(np.median(v)) if v else float("nan") for s, v in kept.items()}
+        spread = {s: float(np.ptp(v)) if v else float("nan") for s, v in kept.items()}
         lr, tb = ratios(widths)
         sheet = Path(arg).with_name(Path(arg).stem + "_tiles.jpg")
         print(Path(arg).name)
         for s in widths:
             print(f"  {s:6} {widths[s]:6.1f}px  (kept {len(kept[s])}/{len(SAMPLES)}, "
                   f"spread {spread[s]:.1f})")
-        print(f"  lr {lr}/{100 - lr}   tb {tb}/{100 - tb}")
+        print(f"  lr {fmt(lr)}   tb {fmt(tb)}")
         check_sheet(card, res, sheet, unused=("top",) if pair else ())
         done.append((Path(arg).name, widths, card))
     if pair:
