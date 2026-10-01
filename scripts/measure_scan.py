@@ -1,9 +1,10 @@
 """One-off helper: measure border widths on a flatbed card scan, with a visual check sheet.
 
 Usage: uv run --with opencv-python-headless --with numpy scripts/measure_scan.py SCAN [SCAN ...] [--drop T11,B4]
---drop removes tiles a person marked wrong on the sheet (applies to every scan given).
+--drop removes tiles a person marked wrong on the sheet: T11 for every scan, 1:T11 for scan 1 only.
 --pair treats scans as pairs of the same side, the second turned 180° on the glass, and averages
-each physical border across the two so the scanner lamp's one-sided edge shadow cancels out.
+each physical border across the two scans, taking top/bottom from the scan where that edge lay at
+the bottom of the glass (the lamp shadows whichever edge is at the top).
 For each scan prints L/R/T/B border widths (px) and lr/tb, and writes <scan>_tiles.jpg
 showing every measured spot zoomed, with the card edge (red) and design edge (green).
 Not part of the app; the human check of the sheet is what makes these labels ground truth.
@@ -138,16 +139,24 @@ def is_flipped(card_a, card_b):
     return float(np.abs(a - b[::-1, ::-1]).mean()) < float(np.abs(a - b).mean())
 
 
-def combine(wa, wb, flipped):
-    """Average each physical border across two scans of the same side."""
+def combine(wa, wb, flipped, top_shadow=False):
+    """Each physical border across two scans of the same side (second turned 180°).
+
+    Left/right are averaged. With top_shadow (auto helper), the edge lying at the top of the
+    glass picks up a lamp shadow whose width varies scan to scan (~4-8 px), so each of the card's
+    top/bottom borders is taken from the scan where it lay at the BOTTOM of the glass instead.
+    The click tool averages everything, because a person clicks past the shadow."""
     if flipped:
         wb = {"left": wb["right"], "right": wb["left"], "top": wb["bottom"], "bottom": wb["top"]}
-    return {s: (wa[s] + wb[s]) / 2 for s in wa}
+    w = {s: (wa[s] + wb[s]) / 2 for s in wa}
+    if flipped and top_shadow:
+        w["top"], w["bottom"] = wb["top"], wa["bottom"]  # each from its unshadowed scan
+    return w
 
 
-def print_pair(name_a, name_b, wa, wb, card_a, card_b):
+def print_pair(name_a, name_b, wa, wb, card_a, card_b, top_shadow=False):
     flipped = is_flipped(card_a, card_b)
-    w = combine(wa, wb, flipped)
+    w = combine(wa, wb, flipped, top_shadow)
     lr, tb = ratios(w)
     print(f"PAIR {name_a} + {name_b} ({'second turned 180°' if flipped else 'same orientation'})")
     print("  " + "  ".join(f"{s} {w[s]:.1f}" for s in w))
@@ -164,12 +173,13 @@ def main():
     pair = "--pair" in scans
     scans = [a for a in scans if a != "--pair"]
     done = []
-    for arg in scans:
+    for idx, arg in enumerate(scans, 1):
+        mine = {d.split(":")[-1] for d in drops if ":" not in d or d.startswith(f"{idx}:")}
         raw = cv2.imread(arg)
         card, pad, px_per_mm = deskew_crop(raw)
         res = measure(card, pad, px_per_mm)
         for side, rows in res.items():  # person-rejected tiles count as outliers
-            res[side] = [(p, c, d, k and f"{side[0].upper()}{i}" not in drops)
+            res[side] = [(p, c, d, k and f"{side[0].upper()}{i}" not in mine)
                          for i, (p, c, d, k) in enumerate(rows, 1)]
         kept = {s: [d - c for _, c, d, k in rows if k] for s, rows in res.items()}
         widths = {s: float(np.median(v)) for s, v in kept.items()}
@@ -185,7 +195,7 @@ def main():
         done.append((Path(arg).name, widths, card))
     if pair:
         for (na, wa, ca), (nb, wb, cb) in zip(done[::2], done[1::2]):
-            print_pair(na, nb, wa, wb, ca, cb)
+            print_pair(na, nb, wa, wb, ca, cb, top_shadow=True)
 
 
 if __name__ == "__main__":

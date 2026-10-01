@@ -1,5 +1,5 @@
 file,side,card_type,lr,tb,expect_reason
-bordered/pikachu-30c-045-front.jpg,front,bordered,,,
-bordered/pikachu-30c-045-back.jpg,back,bordered,,,
+bordered/pikachu-30c-045-front.jpg,front,bordered,55,52,
+bordered/pikachu-30c-045-back.jpg,back,bordered,51,53,
 bordered/pansage-par-004-front.jpg,front,bordered,54,54,
 bordered/pansage-par-004-back.jpg,back,bordered,54,52,
