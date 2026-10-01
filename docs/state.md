@@ -8,7 +8,8 @@
 Project setup complete; constitution next.
 
 ## Recently Done
-- Repo created from project-template (dry run, local only)
+- Repo created from project-template, public at https://github.com/jkhaynes/ten-or-not
+- Testing strategy written (`docs/testing.md`)
 - PRD drafted (`docs/prd.md`): 7 capabilities across v1/v2
 - Stack chosen: ADR 0002 (Vue + FastAPI/OpenCV on Cloud Run, Firebase Auth)
 - CLAUDE.md, README, architecture sketch filled in
