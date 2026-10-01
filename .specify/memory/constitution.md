@@ -35,11 +35,14 @@ number.
 Rationale: users decide whether to pay for grading based on this output; false confidence costs
 them money.
 
-### VII. Photos Are Never Stored
-Photos are processed in memory only. They MUST NOT be written to disk, databases, logs, error
-reports, or analytics, on either backend or frontend. Tests and reviews check that no code path
+### VII. Photos Are Never Retained
+Photos MUST NOT outlive the request that processes them. Our code MUST NOT save them to files,
+databases, object storage, logs, error reports, or analytics, on either backend or frontend.
+Transient buffers managed by the framework or runtime (e.g. an upload spooled to a temp file and
+deleted when the request ends) are allowed. Tests and reviews check that no code path of ours
 persists image bytes.
-Rationale: no storage means no privacy liability and nothing to secure or delete.
+Rationale: no retention means no privacy liability and nothing to secure or delete. The rule
+targets keeping photos, not how bytes move through a single request.
 
 ### VIII. Measure Before You Model
 Anything that can be measured deterministically (centering ratios, max-grade lookup) is computed in
@@ -93,4 +96,4 @@ for added ones, PATCH for wording) and a short note of what changed. Every plan.
 constitution check, and code review verifies compliance; deviations must be justified in plan.md or
 an ADR. Day-to-day guidance lives in `CLAUDE.md`.
 
-**Version**: 1.0.1 | **Ratified**: 2026-10-01 | **Last Amended**: 2026-10-01
+**Version**: 1.0.2 | **Ratified**: 2026-10-01 | **Last Amended**: 2026-10-01

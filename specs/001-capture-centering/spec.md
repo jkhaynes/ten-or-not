@@ -113,8 +113,9 @@ confident number.
   affect left/right vs top/bottom labeling beyond normalizing to portrait.
 - Landscape-format cards: measured with the card's own long and short axes, still reported as
   left/right and top/bottom of the card as printed.
-- Damaged or miscut card with a border that runs off the edge: reported as the extreme ratio
-  (e.g. `100/0`) with max grade per the table, not as an error.
+- Damaged or miscut card with a border that runs off the edge: no design edge can be found on
+  that side, so the side is reported as "centering not measurable" with advice noting the card
+  may be miscut. A miscut card can't reach a useful grade anyway, so no number is needed.
 - Photo too large to upload: the app reduces it on the phone before sending; if it still exceeds
   the limit, the user is told to retake at a lower resolution.
 - Upload fails on a weak cellular signal: the user is told and can retry without retaking photos.
@@ -148,9 +149,9 @@ confident number.
   edges and design edges outlined.
 - **FR-011**: When one side fails, the user MUST be able to retake only that side and keep the
   other side's photo for the current check.
-- **FR-012**: Photos MUST be processed in memory only and MUST NOT be stored, logged, or included
-  in error reports by any part of the system. Nothing about a check persists after the user leaves
-  the result.
+- **FR-012**: Photos MUST NOT be retained beyond the request that processes them: not stored,
+  logged, or included in error reports by any part of the system. Nothing about a check persists
+  after the user leaves the result.
 - **FR-013**: The capture and result screens MUST be usable at phone width in current iOS Safari
   and Android Chrome, and photos MUST be reduced in size on the phone before upload.
 - **FR-014**: The result MUST state that TenOrNot is an estimate and is not affiliated with or

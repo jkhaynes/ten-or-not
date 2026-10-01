@@ -21,7 +21,7 @@ and no deployment in this feature.
 
 **Primary Dependencies**: FastAPI, opencv-python-headless, numpy; Vue 3, Vite
 
-**Storage**: None. Photos are in memory only (research R10 covers the Starlette disk-spool gotcha).
+**Storage**: None. Photos are never retained; only the framework's per-request upload buffer touches temp storage (research R10).
 
 **Testing**: pytest (unit, pipeline, integration); Vitest + @vue/test-utils; Playwright mobile
 emulation
@@ -34,8 +34,8 @@ targets current iOS Safari and Android Chrome
 **Performance Goals**: Under 3 s on the server for both photos; under 1 min from opening the app
 to a result (SC-004)
 
-**Constraints**: Upload ≤ 10 MB per photo (the client sends about 1–2 MB); no disk writes of
-image data; ±1 percentage point ratio accuracy (SC-001)
+**Constraints**: Upload ≤ 10 MB per photo (the client sends about 1–2 MB); photos never
+retained; ±1 percentage point ratio accuracy (SC-001)
 
 **Scale/Scope**: A handful of users; one endpoint; one screen with three states
 
@@ -51,7 +51,7 @@ image data; ±1 percentage point ratio accuracy (SC-001)
 | IV. Simplicity | One endpoint; no router, state library, UI kit or database; no auth code (that's capability 2); retaking resends both photos instead of adding a per-side endpoint |
 | V. Decisions recorded | No new architectural decision; detection is the standard OpenCV approach, recorded in research.md. `docs/architecture.md` is updated for the preview image and dev proxy |
 | VI. Honest estimates | "Max grade possible" labelling, borderline flags, reason codes instead of numbers, and the full-art "not measurable" path |
-| VII. Photos never stored | In-memory decode; spool size raised so uploads never roll to disk (test); no image data in logs or the error handler; the preview goes only to the uploader |
+| VII. Photos never retained | In-memory decode; our code never writes image bytes (static test); framework upload buffer dies with the request; no image data in logs or the error handler; the preview goes only to the uploader |
 | VIII. Measure before model | Fully deterministic; no AI. Thresholds are in `thresholds.py`, separate from the math |
 | IX. Allowlist | Local-only, per constitution v1.0.1; nothing deployed until capability 2 |
 | X. Accuracy measured | The pipeline set with hand-measured labels gates any pipeline or threshold change; the slab check is capability 4 |
@@ -80,7 +80,7 @@ specs/001-capture-centering/
 backend/
 ├── pyproject.toml            # uv; ruff config
 ├── app/
-│   ├── main.py               # FastAPI app, routes, error handlers, spool-size fix
+│   ├── main.py               # FastAPI app, routes, error handlers, size limits
 │   ├── schemas.py            # Pydantic response models (camelCase aliases)
 │   └── centering/            # pure: no FastAPI imports
 │       ├── thresholds.py     # PSA table (data only)
@@ -91,7 +91,7 @@ backend/
 └── tests/
     ├── unit/                 # grading, thresholds, detect/measure on synthetic images
     ├── pipeline/             # labeled real photos + labels.csv
-    └── integration/          # TestClient: contract, errors, no-disk-spool
+    └── integration/          # TestClient: contract, errors, size limits
 
 frontend/
 ├── package.json

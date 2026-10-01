@@ -135,11 +135,11 @@ Run in this order. The first one that fails becomes that side's reason. All thre
   `INTERNAL_ERROR`, a generic message, and a log of the exception type and traceback only). No
   handler or log line includes request bodies, file bytes or image arrays. Image bytes go
   from `UploadFile.read()` into `cv2.imdecode`.
-- **Gotcha**: Starlette's multipart parser buffers each upload in a `SpooledTemporaryFile` that
-  **rolls over to disk above 1 MB** by default. Our uploads are 1–2 MB, so they would hit disk.
-  Fix: set `MultiPartParser.spool_max_size` above the per-file limit (11 MB) at app start, and
-  reject requests whose `Content-Length` is over 21 MB with 413 before the body is parsed. An
-  integration test uploads a 5 MB photo and asserts the spooled file never rolled over
-  (`_rolled is False`). A unit test asserts that nothing in the pipeline module calls
-  `cv2.imwrite` or opens files for writing.
+- **Upload buffering**: Starlette buffers each upload in a `SpooledTemporaryFile`, which moves to
+  a temp file above 1 MB and is deleted when the request ends. Constitution VII (v1.0.2) allows
+  this: it bans retention, not transient framework buffers. On Cloud Run the filesystem is
+  in-memory anyway. We don't tune the spool size. Requests whose `Content-Length` is over 21 MB
+  get 413 before the body is parsed, and parts over 10 MB get 413 in the handler. A unit test
+  (T033) asserts that our code never calls `cv2.imwrite`, opens files for writing, or uses
+  `tempfile`.
 - **Rationale**: Principle VII, and the error format in CLAUDE.md.

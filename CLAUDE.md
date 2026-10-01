@@ -20,7 +20,7 @@ Vue 3 + TypeScript (Vite) on Cloudflare Pages; Python FastAPI + OpenCV on Google
 <!-- Top 5 or so rules Claude would otherwise get wrong. Delete what doesn't apply. -->
 - Layout: `frontend/` (Vue) and `backend/` (FastAPI) in one repo.
 - Never commit secrets. Allowlist and Firebase config come from env vars; local values in `backend/.env` and `frontend/.env.local`, both gitignored.
-- Photos are processed in memory and never written to disk, logs, or error reports.
+- Photos are never retained: our code never saves them to files, storage, logs, or error reports. Framework temp buffers that die with the request are fine.
 - Centering math and max-grade logic live in a pure module (no web/framework code) with unit tests from known card measurements.
 - PSA grade thresholds live in one data table so other graders can be added without touching the math.
 - Naming: language-standard (Python PEP 8 via ruff; Vue `PascalCase.vue` components, `useXxx` composables, camelCase TS). API JSON is camelCase via a Pydantic alias generator. Domain terms: `side` = `front`|`back`, `axis` = `lr`|`tb`, ratios always larger-first (`55/45`), `maxGrade` = highest grade centering allows.

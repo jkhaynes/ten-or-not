@@ -8,8 +8,10 @@
 Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `/speckit-analyze`, then implementation.
 
 ## Recently Done
+- Constitution v1.0.2: VII reworded to "Photos Are Never Retained" (framework temp buffers that die with the request are allowed); dropped the spool-size workaround from 001 research/tasks, which clears analyze finding C1
+- Applied analyze fixes U1 (miscut = not measurable), I1 (`expect_reason` column), I2 (card outline in preview), G1 (unreadable HEIC handled in T015)
 - Generated 001 tasks.md: setup, foundational, US1 MVP (T009-T019), US2 retake (T020-T028), US3 full-art (T029-T032), polish
-- Planned 001: OpenCV contour detect + warp to 20 px/mm, median gradient scan for design edges, pure grading module + PSA table, one `POST /api/centering`, preview image in response; Starlette upload spool raised so photos never hit disk
+- Planned 001: OpenCV contour detect + warp to 20 px/mm, median gradient scan for design edges, pure grading module + PSA table, one `POST /api/centering`, preview image in response
 - PSA centering thresholds verified from psacard.com and recorded in the 001 spec (PSA 10 through 1.5; worse than 90/10 = max PSA 1)
 - Drafted `specs/001-capture-centering/spec.md` + quality checklist (3 user stories: bordered max grade, retake advice, full-art); clarified: full-art measured against printed frame or 'not measurable', no manual edge adjustment, built local-only until capability 2 adds the allowlist
 - Constitution v1.0.1: principle IX clarified to apply to deployed endpoints
