@@ -27,7 +27,7 @@ flowchart LR
 | Grade thresholds | Centering limits per PSA grade, front and back | `backend/` (data table) | Python |
 
 ## Data
-No database or stored photos in v1. Key result shape per side: `side`, `lr` and `tb` ratios (larger-first), `maxGrade`, or a reason code when the photo can't be measured.
+No database or stored photos in v1. Key result shape per side: `side`, `lr` and `tb` ratios (larger-first), `maxGrade`, `borderlineWith`, and a straightened preview image with the measured design edges, or a reason code when the photo can't be measured. Full shapes: `specs/001-capture-centering/data-model.md`.
 
 ## External Integrations
 | Service | Used for | Auth | Failure behavior |
@@ -35,6 +35,7 @@ No database or stored photos in v1. Key result shape per side: `side`, `lr` and 
 | Firebase Auth | Google/GitHub sign-in, ID tokens | Firebase project config | Can't sign in; app unusable until it's back |
 
 ## Cross-Cutting Concerns
+- **Local dev:** Vite proxies `/api` to the backend on `:8000` (no CORS until deployment). Until capability 2, the API runs locally without auth.
 - **Auth:** Firebase ID token on every request; backend verifies it and checks the email against the allowlist env var.
 - **Config and secrets:** env vars; local `.env` files gitignored.
 - **Logging / observability:** stdout → Cloud Logging (built into Cloud Run). Never log photo data.
