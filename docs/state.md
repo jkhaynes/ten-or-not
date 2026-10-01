@@ -22,7 +22,7 @@ Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `
 
 ## Next Up
 1. `/speckit-analyze` for 001, then implement via Superpowers (worktree + subagent-driven-development)
-2. Builder: shoot and hand-measure the pipeline photo set into `backend/tests/pipeline/photos/` (folders, `labels.csv` header and instructions in its README) before T014. Both cards labeled with double scans (Pikachu 30C 045: front 55/52, back 51/53; Pansage PAR 004: front 54/54, back 54/52); 6+ bordered cards, full-art and bad photos still to shoot. The scanner lamp shadows whichever edge lies at the top of the glass (4-8 px, varies by scan): the auto helper takes each top/bottom border from the scan where it lay at the bottom; the click tool (for silver border on light-green art) averages because a person clicks past the shadow
+2. Builder: shoot and hand-measure the pipeline photo set into `backend/tests/pipeline/photos/` (folders, `labels.csv` header and instructions in its README) before T014. 3 cards labeled with double scans (Pikachu 30C 045: front 55/52, back 51/53; Pansage PAR 004: front 54/54, back 54/52; Butterfree BUS 003: front 61/50 = max PSA 8, back 58/52); 5+ bordered cards, full-art and bad photos still to shoot. Auto helper now also finds yellow borders on white (saturation edges) and keeps the innermost agreeing group of readings. The scanner lamp shadows whichever edge lies at the top of the glass (4-8 px, varies by scan): the auto helper takes each top/bottom border from the scan where it lay at the bottom; the click tool (for silver border on light-green art) averages because a person clicks past the shadow
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)

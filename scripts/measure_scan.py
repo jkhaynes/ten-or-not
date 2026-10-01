@@ -23,7 +23,10 @@ STRIP = 30  # px averaged across each sample line, to smooth holo sparkle
 
 def deskew_crop(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.dilate(cv2.Canny(cv2.GaussianBlur(gray, (5, 5), 0), 30, 90), None, iterations=2)
+    sat = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)[:, :, 1]  # yellow border on white: only saturation differs
+    edges = cv2.Canny(cv2.GaussianBlur(gray, (5, 5), 0), 30, 90)
+    edges |= cv2.Canny(cv2.GaussianBlur(sat, (5, 5), 0), 30, 90)
+    edges = cv2.dilate(edges, None, iterations=2)
     cnts, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     rect = cv2.minAreaRect(max(cnts, key=cv2.contourArea))
     (cx, cy), (w, h), ang = rect
@@ -68,6 +71,21 @@ def peak(grad, lo, hi):
     return float(i)
 
 
+MIN_AGREE = 4  # spots that must agree for a group of readings to count
+
+
+def first_cluster(widths, px_mm):
+    """Centre of the narrowest group of >= MIN_AGREE agreeing widths. The design edge is the FIRST
+    boundary in from the card edge; when it's faint (yellow next to light green) most spots jump
+    to art frames or text further in, so the majority group can be the wrong one."""
+    tol = OUTLIER_MM * px_mm
+    groups = [v for v in sorted(widths) if sum(abs(w - v) <= tol for w in widths) >= MIN_AGREE]
+    if not groups:
+        return float(np.median(widths))
+    near = [w for w in widths if abs(w - groups[0]) <= tol]
+    return float(np.median(near))
+
+
 def measure(img, pad, dpi_px_per_mm):
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
     out = {}
@@ -84,12 +102,13 @@ def measure(img, pad, dpi_px_per_mm):
             hi = int(card + 7 * dpi_px_per_mm)
             design = peak(grad, lo, min(hi, n - 1))
             rows.append((pos, card, design))
-        med = np.median([d - c for _, c, d in rows])
-        out[side] = [(p, c, d, abs(d - c - med) <= OUTLIER_MM * dpi_px_per_mm) for p, c, d in rows]
+        out[side] = [(p, c, d, abs(d - c - center) <= OUTLIER_MM * dpi_px_per_mm)
+                     for center in [first_cluster([d - c for _, c, d in rows], dpi_px_per_mm)]
+                     for p, c, d in rows]
     return out
 
 
-def check_sheet(img, res, path):
+def check_sheet(img, res, path, unused=()):
     lab_free = img  # tiles are cut from the same orientation the profiles used
     tiles = []
     for side, rows in res.items():
@@ -109,9 +128,12 @@ def check_sheet(img, res, path):
                 cv2.line(tile, (xs, 0), (xs, tile.shape[0]), col, 2)
             tile = cv2.copyMakeBorder(tile, 56, 6, 6, 6, cv2.BORDER_CONSTANT, value=(255, 255, 255))
             tile_id = f"{side[0].upper()}{n}"  # L1..L15, R1.., T1.., B1..
-            label = f"{tile_id}  {design - card:.1f}px" + ("  REJECTED" if not kept else "")
-            cv2.putText(tile, label, (8, 42), cv2.FONT_HERSHEY_SIMPLEX, 1.3,
-                        (0, 0, 0) if kept else (0, 0, 220), 3)
+            if side in unused:
+                label, color = f"{tile_id}  SHADOW SIDE - not used", (150, 150, 150)
+            else:
+                label = f"{tile_id}  {design - card:.1f}px" + ("  REJECTED" if not kept else "")
+                color = (0, 0, 0) if kept else (0, 0, 220)
+            cv2.putText(tile, label, (8, 42), cv2.FONT_HERSHEY_SIMPLEX, 1.3, color, 3)
             tiles.append(tile)
     th = max(t.shape[0] for t in tiles)
     tw = max(t.shape[1] for t in tiles)
@@ -191,7 +213,7 @@ def main():
             print(f"  {s:6} {widths[s]:6.1f}px  (kept {len(kept[s])}/{len(SAMPLES)}, "
                   f"spread {spread[s]:.1f})")
         print(f"  lr {lr}/{100 - lr}   tb {tb}/{100 - tb}")
-        check_sheet(card, res, sheet)
+        check_sheet(card, res, sheet, unused=("top",) if pair else ())
         done.append((Path(arg).name, widths, card))
     if pair:
         for (na, wa, ca), (nb, wb, cb) in zip(done[::2], done[1::2]):
