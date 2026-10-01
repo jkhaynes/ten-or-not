@@ -5,28 +5,19 @@
 **Last updated:** 2026-10-01
 
 ## Current Focus
-Project setup complete; constitution next.
+Constitution ratified (v1.0.0); next is the first feature spec.
 
 ## Recently Done
+- Constitution v1.0.0 (`.specify/memory/constitution.md`): template principles I-V kept, product principles VI-XI added (honest estimates, no photo storage, measure before model, allowlist, measured accuracy, phone-first); technical constraints and workflow filled in
 - Repo created from project-template, public at https://github.com/jkhaynes/ten-or-not
-- Testing strategy written (`docs/testing.md`)
-- PRD drafted (`docs/prd.md`): 7 capabilities across v1/v2
-- Stack chosen: ADR 0002 (Vue + FastAPI/OpenCV on Cloud Run, Firebase Auth)
-- CLAUDE.md, README, architecture sketch filled in
+- Testing strategy (`docs/testing.md`), PRD (`docs/prd.md`), ADR 0002 (stack), CLAUDE.md, README, architecture sketch
 
 ## Next Up
-1. `/speckit-constitution` with the input below
-2. `/speckit-specify` for capability 1: capture and centering
+1. `/speckit-specify` for capability 1: capture and centering
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)
 - Centering on full-art cards is a known technical risk, to be worked out in the capability 1 spec
 
 ## Notes for Next Session
-Constitution input (pass to `/speckit-constitution`):
-1. Honest estimates: never show more certainty than the evidence supports; centering-only results say "max grade possible", never a predicted grade.
-2. Photos are never stored: processed in memory, never written to disk, logs, or error reports.
-3. Measure before you model: anything measurable deterministically (centering) is computed and unit-tested, not left to AI; AI only for what can't be measured.
-4. Allowlist on every request: no endpoint works without a verified token from an allowlisted email.
-5. Accuracy is measured, not claimed: pipeline or threshold changes are checked against the labeled slab photos once that set exists.
-6. Phone-first: every feature must work in a mobile browser on cellular data.
+- `.specify/scripts/python/resolve_template.py` crashes on Windows consoles (cp1252 can't print the arrow character); run with `PYTHONIOENCODING=utf-8`.
