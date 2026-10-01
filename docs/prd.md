@@ -36,10 +36,11 @@ Pokémon collectors pay to send cards to PSA without knowing whether a card can 
 |---|------------|---------|----------|------|
 | 1 | Capture and centering: photograph front and back, detect and straighten the card, measure L/R and T/B centering on both sides (bordered and full-art), report the max PSA grade possible | v1 | Must | not started |
 | 2 | Allowlist sign-in: Google/GitHub sign-in limited to approved emails | v1 | Must | not started |
-| 3 | Accuracy check: run slab photos with known grades and confirm the real grade never beats the predicted max | v1 | Should | not started |
-| 4 | AI condition scoring: edges, corners, and surface, front and back | v2 | Must | not started |
-| 5 | PSA grade odds: probability per grade (e.g. "60% PSA 10, 35% PSA 9"), never a single number | v2 | Must | not started |
-| 6 | Submit or not: pick the card, look up per-grade prices, subtract grading fees, show worth it / not worth it in dollars | v2 | Should | not started |
+| 3 | Deployment: frontend on Cloudflare Pages, backend on Cloud Run, reachable from a phone anywhere; ships only once sign-in exists | v1 | Must | not started |
+| 4 | Accuracy check: run slab photos with known grades and confirm the real grade never beats the predicted max | v1 | Should | not started |
+| 5 | AI condition scoring: edges, corners, and surface, front and back | v2 | Must | not started |
+| 6 | PSA grade odds: probability per grade (e.g. "60% PSA 10, 35% PSA 9"), never a single number | v2 | Must | not started |
+| 7 | Submit or not: pick the card, look up per-grade prices, subtract grading fees, show worth it / not worth it in dollars | v2 | Should | not started |
 
 ## Success Measures
 - **Accuracy (primary).** v1: on the slab check, the real PSA grade never exceeds the predicted max. v2: the real grade falls within the predicted odds for at least 8 of 10 cards. Quick check on existing slabs first, then a real test on the next raw submission.
@@ -56,4 +57,4 @@ Pokémon collectors pay to send cards to PSA without knowing whether a card can 
 - Centering limits come from PSA's published grading standards.
 
 ## Open Questions
-- [ ] Which price API has per-PSA-grade prices for Pokémon, and what does it cost? (Needed for capability 6, v2.)
+- [ ] Which price API has per-PSA-grade prices for Pokémon, and what does it cost? (Needed for capability 7, v2.)

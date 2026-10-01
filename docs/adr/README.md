@@ -9,3 +9,4 @@ One file per significant decision: why this library, this data store, this patte
 | # | Title | Status | Date |
 |---|-------|--------|------|
 | 0001 | [Record architecture decisions](0001-record-architecture-decisions.md) | Accepted | 2026-10-01 |
+| 0002 | [Stack: Vue + FastAPI/OpenCV on Cloud Run, Firebase Auth](0002-vue-fastapi-cloud-run-firebase.md) | Accepted | 2026-10-01 |

@@ -3,27 +3,28 @@
 <!-- Keep this file short. It loads into every session. Put detail in docs/ and link to it. -->
 
 ## Project
-**TenOrNot**: [One sentence on what this is and who it's for.]
+**TenOrNot**: Pokémon card pre-grader that measures centering from phone photos and estimates PSA grade potential, for me and my collector friends before we pay to submit.
 Full product context: `docs/prd.md`. Current status and next step: `docs/state.md`.
 
 ## Commands
 ```bash
-# Build:   [e.g. dotnet build]
-# Test:    [e.g. dotnet test]
-# Run:     [e.g. dotnet run --project src/Api]
-# Lint:    [e.g. dotnet format --verify-no-changes]
+# (expected, verify once scaffolded)
+# Backend:  cd backend && uv run pytest | uv run ruff check . | uv run fastapi dev
+# Frontend: cd frontend && npm test | npm run lint | npm run dev
 ```
 
 ## Stack
-[e.g. .NET 9 / C#, SQL Server, Angular 19. Keep to one or two lines; the why lives in docs/adr/.]
+Vue 3 + TypeScript (Vite) on Cloudflare Pages; Python FastAPI + OpenCV on Google Cloud Run; Firebase Auth. No database in v1. Why: `docs/adr/0002-vue-fastapi-cloud-run-firebase.md`.
 
 ## Conventions
 <!-- Top 5 or so rules Claude would otherwise get wrong. Delete what doesn't apply. -->
-- [Folder layout / where new code goes]
-- [Naming conventions]
-- [Error handling pattern]
-- [Data access pattern]
-- Never commit secrets. Config goes in [appsettings.Development.json / .env], both gitignored.
+- Layout: `frontend/` (Vue) and `backend/` (FastAPI) in one repo.
+- Never commit secrets. Allowlist and Firebase config come from env vars; local values in `backend/.env` and `frontend/.env.local`, both gitignored.
+- Photos are processed in memory and never written to disk, logs, or error reports.
+- Centering math and max-grade logic live in a pure module (no web/framework code) with unit tests from known card measurements.
+- PSA grade thresholds live in one data table so other graders can be added without touching the math.
+- Naming: language-standard (Python PEP 8 via ruff; Vue `PascalCase.vue` components, `useXxx` composables, camelCase TS). API JSON is camelCase via a Pydantic alias generator. Domain terms: `side` = `front`|`back`, `axis` = `lr`|`tb`, ratios always larger-first (`55/45`), `maxGrade` = highest grade centering allows.
+- Errors: an unmeasurable photo is a result, not an error: return 200 with a reason code (`CARD_NOT_FOUND`, `TOO_MUCH_GLARE`, `TOO_ANGLED`, ...) the UI turns into retake advice. 401 not signed in, 403 not on allowlist, 413 photo too large, 422 missing side. Unexpected exceptions are caught in one handler and return 500 with a generic message. Every non-200 body is `{ "code", "message" }`. The frontend handles errors in one API client, not per component.
 
 ## Where things live
 | Need | Read |
