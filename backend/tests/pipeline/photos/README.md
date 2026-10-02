@@ -21,10 +21,13 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 | Caterpie 1/147 | Burning Shadows (BUS) | Non-holo | Yellow | Auto helper (sleeve edge confused one front scan's right side) | PSA 9 (front T/B 57/43); front photo deliberately ~9% off-angle |
 | Altaria ex 253/182 | Paradox Rift (PAR) | Special illustration rare (textured foil) | Full art with a thin textured silver band (~3 mm) | Auto helper | PSA 9 (front L/R 59/41) |
 | Zoroark-GX 77a/73 | Shining Legends (SLG) | Full art, textured rainbow foil | Thick black frame line inside the border; border ends at a faint embossed line ~2–3 mm in | Click tool (front, 5 strips/side), auto (back) | PSA 9 (front L/R 58/42) |
+| M Gyarados EX 115/122 | BREAKpoint (BKP) | Full art, textured rainbow foil (XY era) | Dark textured band ~2–3 mm; art breaks over it on the left and along the top | Click tool (front, `sh click.sh`), auto (back) | PSA 9 (front L/R 58/42; T/B ±2, see below) |
 
 **Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", the bad photos.
 
 **Full-art border rule:** the border runs from the card edge to the edge of the artwork, which on SM-era full arts is a faint embossed shadow line. Printed decoration inside that (e.g. the thick black frame line on the Zoroark-GX) is part of the border, not its edge. Where a text box or rule bar covers the line, those strips don't count: skip them in the click tool (`s`), or note them as excluded below.
+
+**Known label uncertainty:** m-gyarados-ex-bkp-115 front T/B (51/49): the inner edge of the dark band along the top runs into the name bar, EX logo and lightning art, so top-border clicks spread ~12 px (56–68). T/B is good to about ±2 points; L/R (58/42) is solid. Every value in that range is under the PSA 10 limit, so the max grade label (PSA 9, from L/R) is unaffected.
 
 **Excluded clicks:** zoroark-gx-slg-077a front: the bottom-border strips at 50% and 75% (scan a: 79.0, 77.0 px) and at 50% (scan b top, 78.5 px) landed on the GX rule box; the label uses the remaining strips (bottom 62.3 px, top 59.2 px).
 
@@ -81,6 +84,8 @@ Reason codes: `CARD_NOT_FOUND`, `CARD_TOO_SMALL`, `TOO_ANGLED`, `TOO_BLURRY`, `T
 
 ## Hand-measuring centering
 **Scan every side twice.** The scanner lamp lights the card from one direction, so the card's thickness (and the sleeve) casts a soft shadow along two edges, which biases those borders by a few pixels. Scan the side, then **turn the card 180° on the glass** and scan it again. Pass both scans together with `--pair` (auto) or as two arguments (click tool); the tools detect the turn and combine the two: the auto helper averages left/right and takes each top/bottom border from the scan where it lay at the bottom of the glass (no shadow there); the click tool averages everything, because you click past the shadow yourself. Use the `PAIR … <- use these` numbers.
+
+**Shortcut:** from the repo root, `sh click.sh` click-measures the two newest scans in Downloads (5 strips per side, 20–80%).
 
 **Faster:** `uv run --with opencv-python-headless --with numpy scripts/measure_scan.py --pair <scan> <scan-turned>` (from the repo root) measures the scan and writes `<scan>_tiles.jpg`, which shows every measured spot zoomed in with the card edge (red) and design edge (green). Tiles are named L1–L15, R1–R15, T1–T15 and B1–B15 (left, right, top, bottom; 1 is nearest the start of that side), so you can point to a bad one. Check that every line sits on the real edge; if one doesn't, measure that side by hand as below. The labels are only ground truth once a person has checked them.
 

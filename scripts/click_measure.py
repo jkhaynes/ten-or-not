@@ -2,7 +2,8 @@
 light green art).
 
 Usage: uv run --with opencv-python --with numpy scripts/click_measure.py SCAN [SCAN_TURNED_180]
-       [--positions 0.12,0.25,0.5,0.75,0.88]
+       [--strips 5 | --positions 0.2,0.5,0.8]
+   or: sh click.sh   (from the repo root: the two newest scans in Downloads, i.e. --latest)
 Shows 3 strips per side (12 per scan) in their natural orientation, with a map of the whole card
 marking where the strip is. In each strip click the CARD edge (where the card's printed face
 begins; ignore any dark shadow line outside it), then the DESIGN edge (where the border ends).
@@ -20,7 +21,7 @@ import numpy as np
 
 from measure_scan import deskew_crop, print_pair, ratios
 
-POSITIONS = (0.25, 0.5, 0.75)
+POSITIONS = (0.2, 0.35, 0.5, 0.65, 0.8)  # clear of the rounded corners
 ZOOM = 2
 OUT_MM, IN_MM = 3, 12  # strip covers 3 mm outside the card edge to 12 mm inside
 HALF_MM = 6  # strip half-thickness along the edge (12 mm of context)
@@ -160,10 +161,25 @@ def click_scan(scan, positions=POSITIONS):
 def main():
     args = sys.argv[1:]
     positions = POSITIONS
+    if "--strips" in args:  # n evenly spread strips from 12% to 88% along each side
+        i = args.index("--strips")
+        n = int(args[i + 1]) if i + 1 < len(args) else 0
+        if n < 2:
+            raise SystemExit("--strips needs a number of at least 2, e.g. --strips 5")
+        positions = tuple(round(0.12 + k * 0.76 / (n - 1), 3) for k in range(n))
+        del args[i:i + 2]
     if "--positions" in args:
         i = args.index("--positions")
+        if i + 1 >= len(args):
+            raise SystemExit("--positions needs a value on the same line, e.g. --positions 0.12,0.5,0.88")
         positions = tuple(float(p) for p in args[i + 1].split(","))
         del args[i:i + 2]
+    if "--latest" in args:  # the two newest scans in Downloads, oldest first
+        args.remove("--latest")
+        scans = [p for p in (Path.home() / "Downloads").glob("*.jpg")
+                 if not p.stem.endswith(("_tiles", "_clicks"))]
+        args = [str(p) for p in sorted(scans, key=lambda p: p.stat().st_mtime)[-2:]] + args
+        print("Scans:", ", ".join(Path(a).name for a in args[:2]))
     done = [(Path(a).name, *click_scan(a, positions)) for a in args[:2]]
     if len(done) == 2:
         (na, wa, ca), (nb, wb, cb) = done
