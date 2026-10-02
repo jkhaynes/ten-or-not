@@ -2,10 +2,11 @@
 light green art).
 
 Usage: uv run --with opencv-python --with numpy scripts/click_measure.py SCAN [SCAN_TURNED_180]
+       [--positions 0.12,0.25,0.5,0.75,0.88]
 Shows 3 strips per side (12 per scan) in their natural orientation, with a map of the whole card
 marking where the strip is. In each strip click the CARD edge (where the card's printed face
 begins; ignore any dark shadow line outside it), then the DESIGN edge (where the border ends).
-Keys: Enter = accept, r = redo strip, Esc = quit.
+Keys: Enter = accept, r = redo strip, s = skip strip (line hidden by a box/text), Esc = quit.
 With two scans of the same side (second turned 180° on the glass) it averages each physical
 border, cancelling the scanner lamp's one-sided edge shadow.
 Prints border widths and lr/tb, and writes <scan>_clicks.jpg with every click drawn, as evidence.
@@ -51,7 +52,7 @@ def card_map(card, box):
 
 
 def pick(strip, vertical, cmap, title):
-    """Two clicks along the strip's measuring axis -> (a, b) in strip px, or None on Esc."""
+    """Two clicks along the strip's measuring axis -> (a, b) in strip px, "skip", or None on Esc."""
     clicks = []
     view = cv2.resize(strip, None, fx=ZOOM, fy=ZOOM, interpolation=cv2.INTER_CUBIC)
 
@@ -71,7 +72,8 @@ def pick(strip, vertical, cmap, title):
                 cv2.line(shown, (0, p), (shown.shape[1], p), col, 2)
             else:
                 cv2.line(shown, (p, 0), (p, shown.shape[0]), col, 2)
-        hint = ["1) click CARD edge", "2) click DESIGN edge", "Enter = accept, r = redo"][len(clicks)]
+        hint = ["1) click CARD edge   (s = skip strip)", "2) click DESIGN edge",
+                "Enter = accept, r = redo"][len(clicks)]
         hh = max(shown.shape[0], cmap.shape[0])
         canvas = np.full((hh + HEADER, shown.shape[1] + cmap.shape[1] + 20, 3), 255, np.uint8)
         canvas[HEADER:HEADER + shown.shape[0], :shown.shape[1]] = shown
@@ -84,19 +86,22 @@ def pick(strip, vertical, cmap, title):
             return None
         if key == ord("r"):
             clicks.clear()
+        if key == ord("s"):
+            cv2.destroyWindow(title)
+            return "skip"
         if key in (13, 32) and len(clicks) == 2:
             cv2.destroyWindow(title)
             return tuple(clicks)
 
 
 
-def click_scan(scan):
+def click_scan(scan, positions=POSITIONS):
     card, pad, px_mm = deskew_crop(cv2.imread(scan))
     widths, tiles = {}, []
     for side in ("left", "right", "top", "bottom"):
         widths[side] = []
         vertical = side in ("top", "bottom")
-        for n, pos in enumerate(POSITIONS, 1):
+        for n, pos in enumerate(positions, 1):
             box = strip_box(card, pad, px_mm, side, pos)
             x0, y0, x1, y1 = box
             strip = np.ascontiguousarray(card[y0:y1, x0:x1])
@@ -105,6 +110,8 @@ def click_scan(scan):
                        f"{Path(scan).stem}  {name}: {side} border, {int(pos * 100)}% along")
             if got is None:
                 raise SystemExit("Quit; nothing saved.")
+            if got == "skip":
+                continue
             a, b = got
             widths[side].append(abs(b - a))
             tile = cv2.resize(strip, None, fx=ZOOM, fy=ZOOM, interpolation=cv2.INTER_CUBIC)
@@ -121,6 +128,8 @@ def click_scan(scan):
                         cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3)
             tiles.append(tile)
 
+    if not all(widths.values()):
+        raise SystemExit("Every strip on a side was skipped; rerun with more --positions.")
     med = {s: float(np.median(v)) for s, v in widths.items()}
     lr, tb = ratios(med)
     print(Path(scan).name)
@@ -132,7 +141,14 @@ def click_scan(scan):
     tw = max(t.shape[1] for t in tiles)
     tiles = [cv2.copyMakeBorder(t, 0, th - t.shape[0], 0, tw - t.shape[1], cv2.BORDER_CONSTANT,
                                 value=(255, 255, 255)) for t in tiles]
-    cols = [np.vstack(tiles[i * 3:(i + 1) * 3]) for i in range(4)]
+    blank = np.full((th, tw, 3), 255, np.uint8)
+    rows = max(len(v) for v in widths.values())
+    by_side, k = [], 0
+    for side in widths:  # one column per side; skipped strips leave gaps at the bottom
+        col = tiles[k:k + len(widths[side])]
+        k += len(widths[side])
+        by_side.append(np.vstack(col + [blank] * (rows - len(col))))
+    cols = by_side
     out = Path(scan).with_name(Path(scan).stem + "_clicks.jpg")
     if cv2.imwrite(str(out), np.hstack(cols), [cv2.IMWRITE_JPEG_QUALITY, 85]):
         print(f"  evidence: {out}")
@@ -142,7 +158,13 @@ def click_scan(scan):
 
 
 def main():
-    done = [(Path(a).name, *click_scan(a)) for a in sys.argv[1:3]]
+    args = sys.argv[1:]
+    positions = POSITIONS
+    if "--positions" in args:
+        i = args.index("--positions")
+        positions = tuple(float(p) for p in args[i + 1].split(","))
+        del args[i:i + 2]
+    done = [(Path(a).name, *click_scan(a, positions)) for a in args[:2]]
     if len(done) == 2:
         (na, wa, ca), (nb, wb, cb) = done
         print_pair(na, nb, wa, wb, ca, cb)

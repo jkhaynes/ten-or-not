@@ -14,6 +14,8 @@
 
 - Q: What reference is full-art centering measured against? → A: The printed frame line or
   text-box edges when found reliably; otherwise "centering not measurable for this card".
+  (Refined 2026-10-01 from labeling real cards: the reference is the edge of the artwork; lines
+  printed inside the border don't count. See FR-016.)
 - Q: Can users manually adjust detected edges? → A: No; retake only.
 - Q: How does this feature satisfy the allowlist principle before capability 2 exists? → A: Built
   and run locally without sign-in; allowlist wired in by capability 2 before any deployment.
@@ -159,9 +161,12 @@ confident number.
 - **FR-015**: This feature runs locally without sign-in. The allowlist check (capability 2) MUST be
   applied to every measurement request before the feature is deployed anywhere reachable from
   outside the developer's machine (capability 3).
-- **FR-016**: For full-art cards, the system MUST measure centering against the printed frame line
-  or text-box edges when they can be found reliably, and otherwise return "centering not
-  measurable for this card".
+- **FR-016**: For full-art cards, the system MUST measure centering from the card edge to the edge
+  of the artwork (on SM-era full arts, a faint embossed shadow line; on SV-era special
+  illustration rares, the inner edge of a thin textured silver band) when it can be found
+  reliably, and otherwise return "centering not measurable for this card". Printed decoration
+  inside the border (e.g. a thick black frame line) is part of the border, not its edge, and
+  stretches where a text box or rule bar covers the edge are ignored.
 
 ### Key Entities
 

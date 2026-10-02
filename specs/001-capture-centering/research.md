@@ -80,6 +80,13 @@ Run in this order. The first one that fails becomes that side's reason. All thre
   `CENTERING_NOT_MEASURABLE` at first; that's the intended outcome while this is a known risk.
 - **Risk**: This has the highest uncertainty. Its tasks come after Stories 1 and 2 and can ship
   last, or be cut without affecting them.
+- **Update from labeling real cards (2026-10-01)**: the reference is the edge of the artwork, not
+  the first printed line. On the Zoroark-GX (SM era) the border holds a thick black frame line,
+  and the true edge is a faint embossed shadow line about 2–3 mm in; the strongest-gradient rule
+  finds the black line instead. Text boxes and rule bars cover the edge along parts of the bottom.
+  The band must therefore extend to about 4 mm, the detector should prefer the innermost
+  consistent line before the art, and it must ignore spots covered by boxes. SV-era special
+  illustration rares (Altaria ex) have a textured silver band and measure like bordered cards.
 
 ## R6. Wrong-side detection
 

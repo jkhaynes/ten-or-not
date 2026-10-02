@@ -23,6 +23,10 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 
 **Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", 1 more full-art front, the bad photos.
 
+**Full-art border rule:** the border runs from the card edge to the edge of the artwork, which on SM-era full arts is a faint embossed shadow line. Printed decoration inside that (e.g. the thick black frame line on the Zoroark-GX) is part of the border, not its edge. Where a text box or rule bar covers the line, those strips don't count: skip them in the click tool (`s`), or note them as excluded below.
+
+**Excluded clicks:** zoroark-gx-slg-077a front: the bottom-border strips at 50% and 75% (scan a: 79.0, 77.0 px) and at 50% (scan b top, 78.5 px) landed on the GX rule box; the label uses the remaining strips (bottom 62.3 px, top 59.2 px).
+
 Note: modern (SV-era) special illustration rares look borderless in phone photos but have a thin textured silver band all round, so they measure like bordered cards. Only cards with art truly to the edge exercise the full-art fallback.
 
 ## labels.csv
