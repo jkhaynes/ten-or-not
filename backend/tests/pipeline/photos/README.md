@@ -19,8 +19,11 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 | Pansage 004/182 | Paradox Rift (PAR) | Reverse holo | Silver (SV era) | Click tool (front), auto (back) | PSA 10 |
 | Butterfree 3/147 | Burning Shadows (BUS) | Reverse holo | Yellow | Auto helper | PSA 8 (front L/R 61/39) |
 | Caterpie 1/147 | Burning Shadows (BUS) | Non-holo | Yellow | Auto helper (sleeve edge confused one front scan's right side) | PSA 9 (front T/B 57/43); front photo deliberately ~9% off-angle |
+| Altaria ex 253/182 | Paradox Rift (PAR) | Special illustration rare (textured foil) | Full art with a thin textured silver band (~3 mm) | Auto helper | PSA 9 (front L/R 59/41) |
 
-**Still wanted:** a card in a top loader (glare through thick plastic), 3 full-art fronts, the bad photos.
+**Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", 1 more full-art front, the bad photos.
+
+Note: modern (SV-era) special illustration rares look borderless in phone photos but have a thin textured silver band all round, so they measure like bordered cards. Only cards with art truly to the edge exercise the full-art fallback.
 
 ## labels.csv
 One row per photo. `file` is relative to this folder.

@@ -22,7 +22,7 @@ Tasks for 001 done (`specs/001-capture-centering/tasks.md`, 36 tasks); next is `
 
 ## Next Up
 1. `/speckit-analyze` for 001, then implement via Superpowers (worktree + subagent-driven-development)
-2. Builder: keep building the pipeline photo set in `backend/tests/pipeline/photos/` before T014. 4 cards labeled so far (max PSA: Pikachu 10, Pansage 10, Butterfree 8, Caterpie 9); per-card details and the "Still wanted" list live in that folder's README ("Cards in the set"). Method: each side scanned twice (second turned 180°); `scripts/measure_scan.py --pair` for most cards, `scripts/click_measure.py` when the border is too faint (silver on light green). The scanner lamp shadows whichever edge lies at the top of the glass, so top/bottom borders come from the scan where they lay at the bottom.
+2. Builder: keep building the pipeline photo set in `backend/tests/pipeline/photos/` before T014. 5 cards labeled so far (max PSA: Pikachu 10, Pansage 10, Butterfree 8, Caterpie 9, Altaria ex full art 9); per-card details and the "Still wanted" list live in that folder's README ("Cards in the set"). Method: each side scanned twice (second turned 180°); `scripts/measure_scan.py --pair` for most cards, `scripts/click_measure.py` when the border is too faint (silver on light green). The scanner lamp shadows whichever edge lies at the top of the glass, so top/bottom borders come from the scan where they lay at the bottom.
 
 ## Blockers / Open Questions
 - Price API for per-PSA-grade prices (v2, capability 7)
