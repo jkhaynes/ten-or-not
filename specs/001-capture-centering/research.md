@@ -35,6 +35,12 @@ shows why.
   contour detection fails on the pipeline set. Hough lines for the card outline are more fragile
   on busy backgrounds.
 
+- **Update from labeling real cards (2026-10-01)**: a loose penny sleeve can stand off the card by
+  a few mm, and its outline is then the largest quad, so detection measures the sleeve instead of
+  the card (seen on Caterpie BUS 001 front and Zoroark-GX back scans). Sleeved cards are in scope
+  (spec Assumptions), so T010 needs a test where the quad is refined inward to the card's own edge
+  (strong colour change) when a fainter outline sits 1–5 mm outside it.
+
 ## R3. Photo quality checks → reason codes
 
 Run in this order. The first one that fails becomes that side's reason. All thresholds are *initial*.

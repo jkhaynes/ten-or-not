@@ -20,8 +20,9 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 | Butterfree 3/147 | Burning Shadows (BUS) | Reverse holo | Yellow | Auto helper | PSA 8 (front L/R 61/39) |
 | Caterpie 1/147 | Burning Shadows (BUS) | Non-holo | Yellow | Auto helper (sleeve edge confused one front scan's right side) | PSA 9 (front T/B 57/43); front photo deliberately ~9% off-angle |
 | Altaria ex 253/182 | Paradox Rift (PAR) | Special illustration rare (textured foil) | Full art with a thin textured silver band (~3 mm) | Auto helper | PSA 9 (front L/R 59/41) |
+| Zoroark-GX 77a/73 | Shining Legends (SLG) | Full art, textured rainbow foil | Thick black frame line inside the border; border ends at a faint embossed line ~2–3 mm in | Click tool (front, 5 strips/side), auto (back) | PSA 9 (front L/R 58/42) |
 
-**Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", 1 more full-art front, the bad photos.
+**Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", the bad photos.
 
 **Full-art border rule:** the border runs from the card edge to the edge of the artwork, which on SM-era full arts is a faint embossed shadow line. Printed decoration inside that (e.g. the thick black frame line on the Zoroark-GX) is part of the border, not its edge. Where a text box or rule bar covers the line, those strips don't count: skip them in the click tool (`s`), or note them as excluded below.
 
