@@ -11,12 +11,12 @@ Shapes: [data-model.md](data-model.md).
   `backend/tests/pipeline/photos/`, with a `labels.csv` (`file, side, card_type, lr, tb, expect_reason`,
   using hand-measured larger-first ratios; `expect_reason` is set only for bad photos and leaves
   `lr`/`tb` empty). Minimum to start:
-  - 8 bordered cards, front and back (including a silver-border SV card and a holo)
-  - 3 full-art fronts
+  - 7 measured cards, front and back (done 2026-10-01: yellow and silver borders, holo, reverse
+    holo, non-holo, and three full-art styles; see the photos README for the list)
   - 1 of each bad photo: cropped, glare on a border, steep angle (>20°), blurry, no card,
     card small in frame, two backs
-  - Hand-measure the ratios with a centering ruler or by counting pixels on a flatbed scan;
-    note which method was used in the CSV header comment.
+  - Ratios are measured on flatbed scans, each side scanned twice (second turned 180°), with
+    `scripts/measure_scan.py --pair` or `sh click.sh`; evidence sheets live in `photos/evidence/`.
 
 ## Run
 

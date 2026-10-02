@@ -23,7 +23,7 @@ Keep this up to date as cards are added, so coverage gaps are visible.
 | Zoroark-GX 77a/73 | Shining Legends (SLG) | Full art, textured rainbow foil | Thick black frame line inside the border; border ends at a faint embossed line ~2–3 mm in | Click tool (front, 5 strips/side), auto (back) | PSA 9 (front L/R 58/42) |
 | M Gyarados EX 115/122 | BREAKpoint (BKP) | Full art, textured rainbow foil (XY era) | Dark textured band ~2–3 mm; art breaks over it on the left and along the top | Click tool (front, `sh click.sh`), auto (back) | PSA 9 (front L/R 58/42; T/B ±2, see below) |
 
-**Still wanted:** a card in a top loader (glare through thick plastic), a truly borderless full-art front (no silver band, no frame line; e.g. an XY-era full-art EX) to test "not measurable", the bad photos.
+**Still wanted:** 6 of the 7 bad photos (phone only, no scans; see "The bad photos" below), needed before US2's pipeline tests (T024). Optional: a card in a top loader. Measured cards are complete as of 2026-10-01 (7 cards); no truly borderless full arts exist in the builder's collection, so the full-art "not measurable" path is covered by synthetic tests (T029/T030) and by bad photos.
 
 **Full-art border rule:** the border runs from the card edge to the edge of the artwork, which on SM-era full arts is a faint embossed shadow line. Printed decoration inside that (e.g. the thick black frame line on the Zoroark-GX) is part of the border, not its edge. Where a text box or rule bar covers the line, those strips don't count: skip them in the click tool (`s`), or note them as excluded below.
 
@@ -80,7 +80,7 @@ Reason codes: `CARD_NOT_FOUND`, `CARD_TOO_SMALL`, `TOO_ANGLED`, `TOO_BLURRY`, `T
 | `bad/angled-front.jpg` | Tilt the phone about 30° or more, so the card looks like a trapezoid | `TOO_ANGLED` |
 | `bad/blurry-front.jpg` | Move the phone as you shoot, or tap to focus on the background | `TOO_BLURRY` |
 | `bad/glare-back.jpg` | Put a lamp or phone flashlight so the reflection lands on a border | `TOO_MUCH_GLARE` |
-| `bad/wrong-side-front.jpg` | Photograph a card **back**, labelled side `front` | `WRONG_SIDE` |
+| `bad/wrong-side-front.jpg` | Photograph a card **back**, labelled side `front` (done: a copy of `bordered/butterfree-bus-003-back.jpg`) | `WRONG_SIDE` |
 
 ## Hand-measuring centering
 **Scan every side twice.** The scanner lamp lights the card from one direction, so the card's thickness (and the sleeve) casts a soft shadow along two edges, which biases those borders by a few pixels. Scan the side, then **turn the card 180° on the glass** and scan it again. Pass both scans together with `--pair` (auto) or as two arguments (click tool); the tools detect the turn and combine the two: the auto helper averages left/right and takes each top/bottom border from the scan where it lay at the bottom of the glass (no shadow there); the click tool averages everything, because you click past the shadow yourself. Use the `PAIR … <- use these` numbers.
